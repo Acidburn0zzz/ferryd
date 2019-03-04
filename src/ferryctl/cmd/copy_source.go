@@ -28,6 +28,7 @@ var copySourceCmd = &cobra.Command{
 	Short: "Copy packages by source name",
 	Long:  "Remove an existing package set in the ferryd instance",
 	Run:   copySource,
+	Aliases: []string{ "cherrypick", },
 }
 
 var (
