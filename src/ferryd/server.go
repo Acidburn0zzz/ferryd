@@ -93,6 +93,7 @@ func NewServer() (*Server, error) {
 	router.GET("/api/v1/create/repo/:id", s.CreateRepo)
 	router.GET("/api/v1/remove/repo/:id", s.DeleteRepo)
 	router.GET("/api/v1/delta/repo/:id", s.DeltaRepo)
+	router.GET("/api/v1/delta/package/:repo/:package", s.DeltaPackage)
 	router.GET("/api/v1/index/repo/:id", s.IndexRepo)
 
 	// Client sends us data

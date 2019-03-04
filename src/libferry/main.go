@@ -155,8 +155,14 @@ func (c *Client) DeleteRepo(id string) error {
 }
 
 // DeltaRepo will attempt to reproduce deltas in the given repo
-func (c *Client) DeltaRepo(id string) error {
-	uri := c.formURI("/api/v1/delta/repo/" + id)
+func (c *Client) DeltaRepo(repoName string) error {
+	uri := c.formURI("/api/v1/delta/repo/" + repoName)
+	return c.getBasicResponse(uri, &Response{})
+}
+
+// DeltaPackage will attempt to produce deltas for a specific package in the given repo
+func (c *Client) DeltaPackage(repoName string, packageName string) error {
+	uri := c.formURI(fmt.Sprintf("/api/v1/delta/package/%s/%s", repoName, packageName)) // Endpoint is repoName/packageName
 	return c.getBasicResponse(uri, &Response{})
 }
 

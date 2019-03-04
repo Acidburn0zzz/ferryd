@@ -30,21 +30,34 @@ var deltaCmd = &cobra.Command{
 	Run:   delta,
 }
 
+var repoName string
+var packageName string
+
 func init() {
+	deltaCmd.Flags().StringVarP(&repoName, "repo", "r", "", "Repository to delta")
+	deltaCmd.Flags().StringVarP(&packageName, "package", "p", "", "Package to delta")
+	deltaCmd.MarkFlagRequired("repo")
+
 	RootCmd.AddCommand(deltaCmd)
 }
 
 func delta(cmd *cobra.Command, args []string) {
-	if len(args) != 1 {
-		fmt.Fprintf(os.Stderr, "Usage: delta [repoName]\n")
+	if repoName == "" {
 		return
 	}
 
 	client := libferry.NewClient(socketPath)
 	defer client.Close()
 
-	if err := client.DeltaRepo(args[0]); err != nil {
-		fmt.Fprintf(os.Stderr, "Error while creating deltas: %v\n", err)
-		return
+	if packageName == "" { // Delta entire repository
+		if err := client.DeltaRepo(repoName); err != nil {
+			fmt.Fprintf(os.Stderr, "Error while creating deltas: %v\n", err)
+		}
+	} else { // Package set, delta only specific package
+		if err := client.DeltaPackage(repoName, packageName); err != nil {
+			fmt.Fprintf(os.Stderr, "Error while creating delta for package %s in %s: %v\n", packageName, repoName, err)
+		}
 	}
+
+	return
 }

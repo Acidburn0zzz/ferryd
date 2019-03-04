@@ -53,9 +53,11 @@ const (
 	// cause the repository to be reindexed after each delta job continues
 	DeltaIndex = "Delta+Index"
 
-	// DeltaRepo is a sequential job which creates Delta jobs for every package in
-	// a repo
+	// DeltaRepo is a sequential job which creates Delta jobs for every package in a repo
 	DeltaRepo = "DeltaRepo"
+
+	// DeltaPackage is a sequential job which creates a Delta job for a specific package in a repo
+	DeltaPackage = "DeltaPackage"
 
 	// IndexRepo is a sequential job that requests the repository be re-indexed
 	IndexRepo = "IndexRepo"
@@ -149,6 +151,8 @@ func NewJobHandler(j *JobEntry) (JobHandler, error) {
 		return NewDeltaJobHandler(j, false)
 	case DeltaRepo:
 		return NewDeltaRepoJobHandler(j)
+	case DeltaPackage:
+		return NewDeltaPackageJobHandler(j)
 	case DeltaIndex:
 		return NewDeltaJobHandler(j, true)
 	case IndexRepo:

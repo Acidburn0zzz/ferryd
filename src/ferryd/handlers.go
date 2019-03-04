@@ -165,6 +165,17 @@ func (s *Server) DeltaRepo(w http.ResponseWriter, r *http.Request, p httprouter.
 	s.jproc.PushJob(jobs.NewDeltaRepoJob(id))
 }
 
+// DeltaPackage will handle remote requests for delta generation of a specific package
+func (s *Server) DeltaPackage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	repoName := p.ByName("repo")
+	packageName := p.ByName("package")
+	log.WithFields(log.Fields{
+		"id": repoName,
+		"package": packageName,
+	}).Info("Package delta requested")
+	s.jproc.PushJob(jobs.NewDeltaPackageJob(repoName, packageName))
+}
+
 // IndexRepo will handle remote requests for repository indexing
 func (s *Server) IndexRepo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	id := p.ByName("id")
