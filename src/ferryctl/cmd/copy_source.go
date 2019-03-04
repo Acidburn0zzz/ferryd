@@ -21,58 +21,46 @@ import (
 	"github.com/spf13/cobra"
 	"libferry"
 	"os"
-	"strconv"
 )
 
 var copySourceCmd = &cobra.Command{
-	Use:   "source [fromRepo] [targetRepo] [sourceName] [releaseNumber]",
-	Short: "copy packages by source name",
+	Use:   "copy",
+	Short: "Copy packages by source name",
 	Long:  "Remove an existing package set in the ferryd instance",
 	Run:   copySource,
 }
 
+var (
+	copyFromRepo string
+	copyToRepo string
+	copyPackageName string
+	copyRelNum int
+)
+
 func init() {
-	CopyCmd.AddCommand(copySourceCmd)
+	copySourceCmd.Flags().StringVarP(&copyFromRepo, "from", "f", "unstable", "From / Source Repository")
+	copySourceCmd.Flags().StringVarP(&copyToRepo, "to", "t", "shannon", "To / Destination Repository")
+	copySourceCmd.Flags().StringVarP(&copyPackageName, "package", "p", "", "Package Name")
+	copySourceCmd.Flags().IntVarP(&copyRelNum, "release", "r", -1, "Release Number")
+	copySourceCmd.MarkFlagRequired("from")
+	copySourceCmd.MarkFlagRequired("to")
+	copySourceCmd.MarkFlagRequired("package")
+
+	RootCmd.AddCommand(copySourceCmd)
 }
 
 func copySource(cmd *cobra.Command, args []string) {
-	var (
-		repoID        string
-		targetID      string
-		sourceID      string
-		sourceRelease int
-	)
-
-	switch len(args) {
-	case 3:
-		repoID = args[0]
-		targetID = args[1]
-		sourceID = args[2]
-		sourceRelease = -1
-	case 4:
-		repoID = args[0]
-		targetID = args[1]
-		sourceID = args[2]
-
-		release, err := strconv.ParseInt(args[3], 10, 32)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid integer: %v\n", err)
+	for _, val := range []string{ copyFromRepo, copyToRepo, copyPackageName, } {
+		if val == "" {
+			fmt.Println(cmd.UsageString())
 			return
 		}
-		if release < 1 {
-			fmt.Fprintf(os.Stderr, "Release should be higher than 1\n")
-			return
-		}
-		sourceRelease = int(release)
-	default:
-		fmt.Fprintf(os.Stderr, "usage: [fromRepo] [targetRepo] [sourceName] [releaseNumber]\n")
-		return
 	}
 
 	client := libferry.NewClient(socketPath)
 	defer client.Close()
 
-	if err := client.CopySource(repoID, targetID, sourceID, sourceRelease); err != nil {
+	if err := client.CopySource(copyFromRepo, copyToRepo, copyPackageName, copyRelNum); err != nil {
 		fmt.Fprintf(os.Stderr, "Error while copying source: %v\n", err)
 		return
 	}

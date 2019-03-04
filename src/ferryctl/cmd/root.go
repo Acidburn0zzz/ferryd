@@ -44,12 +44,6 @@ var ResetCmd = &cobra.Command{
 	Short: "reset job logs",
 }
 
-// CopyCmd is the parent for copy type commands
-var CopyCmd = &cobra.Command{
-	Use:   "copy [source]",
-	Short: "copy",
-}
-
 // TrimCmd is the parent for trim type commands
 var TrimCmd = &cobra.Command{
 	Use:   "trim [packages] [obsoletes]",
@@ -64,7 +58,6 @@ var (
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&socketPath, "socket", "s", "/run/ferryd.sock", "Set the socket path to talk to ferryd")
 
-	RootCmd.AddCommand(CopyCmd)
 	RootCmd.AddCommand(ListCmd)
 	RootCmd.AddCommand(RemoveCmd)
 	RootCmd.AddCommand(ResetCmd)

@@ -37,9 +37,9 @@ var cloneRepoCmd = &cobra.Command{
 }
 
 func init() {
-	cloneRepoCmd.PersistentFlags().StringVarP(&fromRepo, "from", "f", "", "Source Repo")
-	cloneRepoCmd.PersistentFlags().StringVarP(&toRepo, "to", "t", "", "Destination Repo")
-	cloneRepoCmd.PersistentFlags().BoolVarP(&deepClone, "deep", "d", false, "Perform a deep clone")
+	cloneRepoCmd.Flags().StringVarP(&fromRepo, "from", "f", "", "Source Repo")
+	cloneRepoCmd.Flags().StringVarP(&toRepo, "to", "t", "", "Destination Repo")
+	cloneRepoCmd.Flags().BoolVarP(&deepClone, "deep", "d", false, "Perform a deep clone")
 	cloneRepoCmd.MarkFlagRequired("from")
 	cloneRepoCmd.MarkFlagRequired("to")
 
