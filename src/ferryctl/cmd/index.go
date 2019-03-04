@@ -24,26 +24,29 @@ import (
 )
 
 var indexCmd = &cobra.Command{
-	Use:   "index [repoName]",
+	Use:   "index",
 	Short: "index the given repository",
 	Long:  "Request the index be reconstructed in the given repository",
 	Run:   index,
 }
 
+var indexRepoName string
+
 func init() {
+	indexCmd.Flags().StringVarP(&indexRepoName, "name", "n", "", "Name of repository")
 	RootCmd.AddCommand(indexCmd)
 }
 
 func index(cmd *cobra.Command, args []string) {
-	if len(args) != 1 {
-		fmt.Fprintf(os.Stderr, "usage: index [repoName]\n")
+	if indexRepoName == "" {
+		fmt.Println(cmd.UsageString())
 		return
 	}
 
 	client := libferry.NewClient(socketPath)
 	defer client.Close()
 
-	if err := client.IndexRepo(args[0]); err != nil {
+	if err := client.IndexRepo(indexRepoName); err != nil {
 		fmt.Fprintf(os.Stderr, "Error while indexing: %v\n", err)
 		return
 	}

@@ -43,8 +43,6 @@ func init() {
 	copySourceCmd.Flags().StringVarP(&copyToRepo, "to", "t", "shannon", "To / Destination Repository")
 	copySourceCmd.Flags().StringVarP(&copyPackageName, "package", "p", "", "Package Name")
 	copySourceCmd.Flags().IntVarP(&copyRelNum, "release", "r", -1, "Release Number")
-	copySourceCmd.MarkFlagRequired("from")
-	copySourceCmd.MarkFlagRequired("to")
 	copySourceCmd.MarkFlagRequired("package")
 
 	RootCmd.AddCommand(copySourceCmd)

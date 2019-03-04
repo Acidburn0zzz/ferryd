@@ -34,6 +34,7 @@ var createRepoName string
 
 func init() {
 	createRepoCmd.Flags().StringVarP(&createRepoName, "name", "n", "", "Repository Name")
+	createRepoCmd.MarkFlagRequired("name")
 	RootCmd.AddCommand(createRepoCmd)
 }
 
