@@ -24,26 +24,29 @@ import (
 )
 
 var createRepoCmd = &cobra.Command{
-	Use:   "create-repo [repoName]",
+	Use:   "create-repo",
 	Short: "create a new repository",
 	Long:  "Create a new repository in the ferryd instance, if it doesn't exist",
 	Run:   createRepo,
 }
 
+var createRepoName string
+
 func init() {
+	createRepoCmd.Flags().StringVarP(&createRepoName, "name", "n", "", "Repository Name")
 	RootCmd.AddCommand(createRepoCmd)
 }
 
 func createRepo(cmd *cobra.Command, args []string) {
-	if len(args) != 1 {
-		fmt.Fprintf(os.Stderr, "usage: create-repo [repoName]\n")
+	if createRepoName == "" {
+		fmt.Println(cmd.UsageString())
 		return
 	}
 
 	client := libferry.NewClient(socketPath)
 	defer client.Close()
 
-	if err := client.CreateRepo(args[0]); err != nil {
+	if err := client.CreateRepo(createRepoName); err != nil {
 		fmt.Fprintf(os.Stderr, "Error while creating repo: %v\n", err)
 		return
 	}
