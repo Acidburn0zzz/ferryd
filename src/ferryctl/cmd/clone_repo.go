@@ -24,31 +24,38 @@ import (
 )
 
 var (
-	fullClone bool
+	fromRepo string
+	toRepo string
+	deepClone bool
 )
 
 var cloneRepoCmd = &cobra.Command{
-	Use:   "clone [fromRepo] [newRepo]",
+	Use:   "clone",
 	Short: "clone an existing repository",
 	Long:  "Clone an existing repository into a new repository",
 	Run:   cloneRepo,
 }
 
 func init() {
-	cloneRepoCmd.PersistentFlags().BoolVarP(&fullClone, "full", "f", false, "Perform a deep clone")
+	cloneRepoCmd.PersistentFlags().StringVarP(&fromRepo, "from", "f", "", "Source Repo")
+	cloneRepoCmd.PersistentFlags().StringVarP(&toRepo, "to", "t", "", "Destination Repo")
+	cloneRepoCmd.PersistentFlags().BoolVarP(&deepClone, "deep", "d", false, "Perform a deep clone")
+	cloneRepoCmd.MarkFlagRequired("from")
+	cloneRepoCmd.MarkFlagRequired("to")
+
 	RootCmd.AddCommand(cloneRepoCmd)
 }
 
 func cloneRepo(cmd *cobra.Command, args []string) {
-	if len(args) != 2 {
-		fmt.Fprintf(os.Stderr, "usage: clone [fromRepo] [newRepo]\n")
+	if (fromRepo == "") || (toRepo == "") {
+		fmt.Fprintf(os.Stderr, cmd.UsageString())
 		return
 	}
 
 	client := libferry.NewClient(socketPath)
 	defer client.Close()
 
-	if err := client.CloneRepo(args[0], args[1], fullClone); err != nil {
+	if err := client.CloneRepo(fromRepo, toRepo, deepClone); err != nil {
 		fmt.Fprintf(os.Stderr, "Error while cloning repo: %v\n", err)
 		return
 	}

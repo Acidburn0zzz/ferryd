@@ -24,7 +24,7 @@ import (
 )
 
 var deltaCmd = &cobra.Command{
-	Use:   "delta [repoName]",
+	Use:   "delta",
 	Short: "Create deltas",
 	Long:  "Rebuild all deltas for a repo",
 	Run:   delta,
@@ -43,6 +43,7 @@ func init() {
 
 func delta(cmd *cobra.Command, args []string) {
 	if repoName == "" {
+		fmt.Println(cmd.UsageString())
 		return
 	}
 
